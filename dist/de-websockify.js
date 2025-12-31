@@ -2,9 +2,9 @@
 'use strict';
 
 var require$$0 = require('path');
+var util = require('util');
 var EventEmitter = require('events');
 var net = require('net');
-var util = require('util');
 
 function getDefaultExportFromCjs (x) {
 	return x && x.__esModule && Object.prototype.hasOwnProperty.call(x, 'default') ? x['default'] : x;
@@ -645,6 +645,7 @@ function requireOptimist () {
 var optimistExports = requireOptimist();
 var optimist = /*@__PURE__*/getDefaultExportFromCjs(optimistExports);
 
+const d$2 = util.debug("@app/options");
 function getUsage(cmd) {
   return `${cmd} [--retry_interval <number>] [--retry_times <number>] <[source_addr:]source_port> <target_url>`;
 }
@@ -664,13 +665,15 @@ async function getOptions() {
   }
   const target_url = /^(wss?|https?):\/\//.test(target) ? target : `ws://${target}`;
   const { retry_interval, retry_times } = argv;
-  return {
+  const result = {
     source_addr,
     source_port,
     target_url,
     retry_interval: typeof retry_interval === "number" ? retry_interval : 5,
-    retry_times: typeof retry_times === "number" ? retry_interval : 5
+    retry_times: typeof retry_times === "number" ? retry_times : 5
   };
+  d$2("resolved options: %o", result);
+  return result;
 }
 class ArgumentsError extends Error {
 }
@@ -716,13 +719,17 @@ class Client {
         ws = await connect(url, 2e3);
         break;
       } catch (err) {
-        if (err instanceof TimeoutError) {
-          if (--retry_times > 0) {
-            await delay(retry_interval * 1e3);
-            continue;
-          }
+        if (--retry_times > 0) {
+          d$1(
+            "[%s] connecting failed: %s, retrying in %d seconds",
+            url,
+            err.message ?? err,
+            retry_interval
+          );
+          await delay(retry_interval * 1e3);
+          continue;
         }
-        throw err;
+        throw new Error("Failed to connect: " + url + ` (${err.message ?? err})`);
       }
     }
     const { socket } = this;
@@ -812,7 +819,7 @@ class Server extends EventEmitter {
     if (server != null) {
       const close = util.promisify(server.close).bind(server);
       await close();
-      d("[%s] listening...", desc);
+      d("[%s] stopping...", desc);
     }
   }
 }
@@ -841,7 +848,7 @@ async function main() {
   const server = new Server(port, addr);
   server.on("connect", (client) => {
     client.forward(url, retry_interval, retry_times).catch((err) => {
-      console.error("Error:", err);
+      console.error("Error:", err.message ?? err);
       client.close();
     });
   });
@@ -849,7 +856,12 @@ async function main() {
     console.error("Error:", err.message ?? err);
     process.exit(1);
   });
+  let stopping = false;
   process.on("SIGINT", () => {
+    if (stopping) {
+      process.exit(1);
+    }
+    stopping = true;
     server.stop();
   });
 }
