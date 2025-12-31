@@ -1,6 +1,6 @@
-# de-websockify: de
+# de-websockify: Translates normal socket traffic to WebSocket
 
-[websockify](https://github.com/novnc/websockify) translates WebSockets traffic to normal socket traffic, while this package translates normal TCP socket traffic to WebSocket. So you can use it to build a transparent proxy:
+[websockify](https://github.com/novnc/websockify) translates WebSockets traffic to normal socket traffic, while this package translates normal socket traffic to WebSocket. So you can use it to build a transparent proxy:
 
 [app] <--normal socket--> [de-websockify] <--WebSocket--> [websockify] <--normal socket--> [service]
 
