@@ -1,0 +1,39 @@
+{
+    // "$schema": "https://www.schemastore.org/tsconfig",
+    // "_version": "2.0.0",
+
+    "compilerOptions": {
+        // "incremental": true,
+        // "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.tsbuildinfo",
+        // "rootDir": "src",
+        // "outDir": "dist",
+
+        "lib": ["dom", "dom.iterable", "es2020"],
+        // "types": ["node"], // npm i @types/node
+        "skipLibCheck": true,
+
+        "target": "esnext",
+        "module": "esnext",
+        "moduleResolution": "bundler",
+
+        "noEmit": true,
+        "strict": true,
+        // "strictNullChecks": true,
+        "verbatimModuleSyntax": true,
+
+        // "allowJs": true,
+        // "esModuleInterop": true,
+        "resolveJsonModule": true,
+        "isolatedModules": true,
+        "jsx": "preserve",
+
+        "plugins": [],
+    },
+    "include": [
+        "typings/**/*.d.ts",
+        "src/**/*.ts",
+    ],
+    "exclude": [
+        "node_modules"
+    ]
+}

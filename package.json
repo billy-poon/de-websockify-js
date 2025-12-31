@@ -1,0 +1,29 @@
+{
+  "name": "de-websockify",
+  "version": "0.0.1",
+  "description": "",
+  "private": true,
+  "scripts": {
+    "start": "NODE_DEBUG=@app/* NODE_ENV=development tsx src/index.ts",
+    "build": "NODE_ENV=production rollup --config rollup.config.mjs",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "packageManager": "pnpm@10.20.0",
+  "dependencies": {
+    "optimist": "^0.6.1"
+  },
+  "devDependencies": {
+    "@rollup/plugin-commonjs": "^29.0.0",
+    "@rollup/plugin-node-resolve": "^16.0.3",
+    "@rollup/plugin-replace": "^6.0.3",
+    "@types/node": "^25.0.3",
+    "@types/optimist": "^0.0.33",
+    "@types/ws": "^8.18.1",
+    "rollup": "^4.54.0",
+    "rollup-plugin-esbuild": "^6.2.1",
+    "tsx": "^4.21.0"
+  }
+}
