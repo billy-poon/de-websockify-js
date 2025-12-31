@@ -42,6 +42,10 @@ export class Client {
             d('[%s] => [%s]: %d bytes', this.desc, url, data.length)
             ws.send(data)
         })
+        socket.on('error', (err) => {
+            console.error(err)
+            socket.destroy()
+        })
 
         ws.addEventListener('close', (e) => {
             d('[%s] closed: %s', url, e.reason ?? '-')
@@ -58,6 +62,7 @@ export class Client {
         })
         ws.addEventListener('error', (e) => {
             console.error((e as ErrorEvent).error)
+            ws.close()
         })
 
         return this

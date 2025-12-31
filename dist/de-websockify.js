@@ -741,6 +741,10 @@ class Client {
       d$1("[%s] => [%s]: %d bytes", this.desc, url, data.length);
       ws.send(data);
     });
+    socket.on("error", (err) => {
+      console.error(err);
+      socket.destroy();
+    });
     ws.addEventListener("close", (e) => {
       d$1("[%s] closed: %s", url, e.reason ?? "-");
       socket.destroy();
@@ -753,6 +757,7 @@ class Client {
     });
     ws.addEventListener("error", (e) => {
       console.error(e.error);
+      ws.close();
     });
     return this;
   }
